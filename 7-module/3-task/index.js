@@ -4,7 +4,6 @@ export default class StepSlider {
     this.value = value
     this.render()
     this.allSpans = this.elem.querySelectorAll('.slider__steps span')
-    console.log(this.allSpans)
     
   }
 
@@ -40,7 +39,7 @@ export default class StepSlider {
     this.elem.querySelector('.slider').addEventListener('click', (event) => this.sliderClick(event))
   }
 
-  sliderClick(event) {
+  sliderClick = (event) => {
 
     let left = event.clientX - this.elem.getBoundingClientRect().left;
     let leftRelative = left / this.elem.offsetWidth;
@@ -49,14 +48,19 @@ export default class StepSlider {
     let value = Math.round(approximateValue);
     let leftPersents = value / segments * 100;
   
-    this.elem.querySelector('.slider__value').textContent = segments
+    this.elem.querySelector('.slider__value').textContent = value
     if (this.elem.querySelector('.slider__step-active')) {
       this.elem.querySelector('.slider__step-active').classList.remove('slider__step-active')
     }
-    this.allSpans[segments].classList.add('slider__step-active')
+    this.allSpans[value].classList.add('slider__step-active')
     this.elem.querySelector('.slider__thumb').style.left = `${leftPersents}%` 
     this.elem.querySelector('.slider__progress').style.width = `${leftPersents}%` 
-
-    
+   
+    this.value = value
+    let slChange = new CustomEvent('slider-change', {
+      detail: this.value,
+      bubbles: true
+    })
+    this.elem.dispatchEvent(slChange)
   }
 }
