@@ -42,7 +42,7 @@ export default class Modal {
   }
 
   setTitle(title) {
-    this.elem.querySelector('.modal__title').textContext = title
+    this.elem.querySelector('.modal__title').textContent = title
   }
 
   setBody(modalBody) {
