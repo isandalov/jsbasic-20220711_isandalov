@@ -39,8 +39,6 @@ export default class Modal {
      document.body.classList.add("is-modal-open")
      this.elem.querySelector('.modal__close').addEventListener('click', () => this.close())
      document.addEventListener('keydown', (event) => this.closeOnEcs(event))
-     alert(document.body.querySelector('.modal__title').textContext)
-     alert(document.querySelector('.modal__title').textContext)
   }
 
   setTitle(title) {
