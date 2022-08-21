@@ -4,7 +4,8 @@ export default class StepSlider {
     this.value = value
     this.render()
     this.allSpans = this.elem.querySelectorAll('.slider__steps span')
-    
+    //this.elem.querySelector('.slider').addEventListener('click', (event) => this.sliderClick(event))
+    this.elem.addEventListener('click', (event) => this.sliderClick(event))
   }
 
   render() {
@@ -36,31 +37,33 @@ export default class StepSlider {
 
     this.elem.querySelector('.slider__steps').innerHTML = htmlSpan
     this.elem.querySelector('.slider__steps span').classList.add("slider__step-active")
-    this.elem.querySelector('.slider').addEventListener('click', (event) => this.sliderClick(event))
+    //this.elem.querySelector('.slider').addEventListener('click', (event) => this.sliderClick(event))
   }
 
   sliderClick = (event) => {
-
-    let left = event.clientX - this.elem.getBoundingClientRect().left;
-    let leftRelative = left / this.elem.offsetWidth;
-    let segments = this.steps - 1;
-    let approximateValue = leftRelative * segments;
-    let value = Math.round(approximateValue);
-    let leftPersents = value / segments * 100;
+    if (event.target.closest('.slider')) {
+      let left = event.clientX - this.elem.getBoundingClientRect().left;
+      let leftRelative = left / this.elem.offsetWidth;
+      let segments = this.steps - 1;
+      let approximateValue = leftRelative * segments;
+      let value = Math.round(approximateValue);
+      let leftPersents = value / segments * 100;
+      this.value = value
   
-    this.elem.querySelector('.slider__value').textContent = value
-    if (this.elem.querySelector('.slider__step-active')) {
-      this.elem.querySelector('.slider__step-active').classList.remove('slider__step-active')
-    }
-    this.allSpans[value].classList.add('slider__step-active')
-    this.elem.querySelector('.slider__thumb').style.left = `${leftPersents}%` 
-    this.elem.querySelector('.slider__progress').style.width = `${leftPersents}%` 
+      this.elem.querySelector('.slider__value').textContent = this.value
+      if (this.elem.querySelector('.slider__step-active')) {
+        this.elem.querySelector('.slider__step-active').classList.remove('slider__step-active')
+      }
+      this.allSpans[value].classList.add('slider__step-active')
+      this.elem.querySelector('.slider__thumb').style.left = `${leftPersents}%` 
+      this.elem.querySelector('.slider__progress').style.width = `${leftPersents}%` 
    
-    this.value = value
-    let slChange = new CustomEvent('slider-change', {
-      detail: this.value,
-      bubbles: true
-    })
-    this.elem.dispatchEvent(slChange)
+      let slChange = new CustomEvent('slider-change', {
+        detail: this.value,
+        bubbles: true
+      })
+      this.elem.dispatchEvent(slChange)
+    }
+
   }
 }
