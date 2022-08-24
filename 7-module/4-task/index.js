@@ -4,7 +4,8 @@ export default class StepSlider {
     this.value = value
     this.render()
     this.allSpans = this.elem.querySelectorAll('.slider__steps span')
-    this.elem.addEventListener('click', (event) => this.sliderClick(event))
+   //this.elem.addEventListener('click', (event) => this.sliderClick(event))
+    this.elem.addEventListener('pointerdown', (event) => this.sliderClick(event))
   }
 
   render() {
@@ -36,12 +37,53 @@ export default class StepSlider {
 
     this.elem.querySelector('.slider__steps').innerHTML = htmlSpan
     this.elem.querySelector('.slider__steps span').classList.add("slider__step-active")
-    //this.elem.querySelector('.slider').addEventListener('click', (event) => this.sliderClick(event))
   }
 
   sliderClick = (event) => {
     if (event.target.closest('.slider')) {
-      let left = event.clientX - this.elem.getBoundingClientRect().left;
+      let thumb = this.elem.querySelector('.slider__thumb')
+      let progress = this.elem.querySelector('.slider__progress')
+      let activeStep = this.elem.querySelector('.slider__step-active')
+      thumb.ondragstart = () => false
+      
+ 
+      document.addEventListener('pointermove', (event) => onMouseMove(event))
+        
+      document.addEventListener('pointerup', onMouseUp(), {once: true})
+
+      
+      onMouseMove = (event) => {
+        let left = event.clientX - this.elem.getBoundingClientRect().left
+        let reletive = left / this.elem.offsetWidth
+        if (reletive < 0) {
+          reletive = 0
+        }
+        if (reletive > 1) {
+          reletive = 1
+        }
+        percent = reletive * 100
+
+        thumb.style.left = `${percent}%`
+        progress.style.width = `${percent}%
+        `  
+        let segments = this.steps - 1;
+        let approximateValue = left * segments;
+        let value = Math.round(approximateValue);
+        this.value = value
+
+        this.elem.querySelector('.slider__value').textContent = this.value
+        if (activeStep) {
+          activeStep.classList.remove('slider__step-active')
+        }
+        this.allSpans[value].classList.add('slider__step-active')
+      }
+
+      onMouseUp = () => {
+         document.removeEventListener('pointermove', onMouseMove())
+      }
+
+
+      /*let left = event.clientX - this.elem.getBoundingClientRect().left;
       let leftRelative = left / this.elem.offsetWidth;
       let segments = this.steps - 1;
       let approximateValue = leftRelative * segments;
@@ -57,7 +99,7 @@ export default class StepSlider {
       this.elem.querySelector('.slider__thumb').style.left = `${leftPersents}%` 
       this.elem.querySelector('.slider__progress').style.width = `${leftPersents}%` 
 
-      this.elem.querySelector('.slider__thumb').ondragstart = () => false;
+      this.elem.querySelector('.slider__thumb').ondragstart = () => false;*/
    
       let slChange = new CustomEvent('slider-change', {
         detail: this.value,
