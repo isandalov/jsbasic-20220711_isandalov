@@ -4,7 +4,6 @@ export default class StepSlider {
     this.value = value
     this.render()
     this.allSpans = this.elem.querySelectorAll('.slider__steps span')
-    //this.elem.querySelector('.slider').addEventListener('click', (event) => this.sliderClick(event))
     this.elem.addEventListener('click', (event) => this.sliderClick(event))
   }
 

@@ -45,14 +45,9 @@ export default class StepSlider {
       let progress = this.elem.querySelector('.slider__progress')
       let activeStep = this.elem.querySelector('.slider__step-active')
       thumb.ondragstart = () => false
-      
- 
-      document.addEventListener('pointermove', (event) => onMouseMove(event))
-        
-      document.addEventListener('pointerup', onMouseUp(), {once: true})
-
-      
-      onMouseMove = (event) => {
+           
+      let onMouseMove = (event) => {
+        thumb.classList.add('slider_dragging')
         let left = event.clientX - this.elem.getBoundingClientRect().left
         let reletive = left / this.elem.offsetWidth
         if (reletive < 0) {
@@ -61,14 +56,13 @@ export default class StepSlider {
         if (reletive > 1) {
           reletive = 1
         }
-        percent = reletive * 100
-
+        let percent = reletive * 100
         thumb.style.left = `${percent}%`
-        progress.style.width = `${percent}%
-        `  
+        progress.style.width = `${percent}%` 
+     
         let segments = this.steps - 1;
-        let approximateValue = left * segments;
-        let value = Math.round(approximateValue);
+        let approximateValue = reletive * segments;
+        let value = Math.round(approximateValue); 
         this.value = value
 
         this.elem.querySelector('.slider__value').textContent = this.value
@@ -78,10 +72,16 @@ export default class StepSlider {
         this.allSpans[value].classList.add('slider__step-active')
       }
 
-      onMouseUp = () => {
-         document.removeEventListener('pointermove', onMouseMove())
+      let onMouseUp = () => {
+        console.log('up')
+        thumb.classList.remove('slider_dragging')
+        document.removeEventListener('pointermove', () => onMouseMove)
       }
 
+
+      document.addEventListener('pointermove', (event) => onMouseMove(event))
+        
+      document.addEventListener('pointerup', () => onMouseUp, {once: true})
 
       /*let left = event.clientX - this.elem.getBoundingClientRect().left;
       let leftRelative = left / this.elem.offsetWidth;
@@ -109,4 +109,7 @@ export default class StepSlider {
     }
 
   }
+
+
+
 }
