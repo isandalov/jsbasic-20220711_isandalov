@@ -13,7 +13,7 @@ export default class Cart {
   }
 
   addProduct(product) {
-    // СКОПИРУЙТЕ СЮДЯ СВОЙ КОД
+    // СКОПИРУЙТЕ СЮДЯ СВОЙ КОД11
   }
 
   updateProductCount(productId, amount) {
