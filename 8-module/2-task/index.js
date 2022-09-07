@@ -4,7 +4,7 @@ import ProductCard from '../../6-module/2-task/index.js';
 export default class ProductGrid {
   constructor(products) {
     this.products = products;
-    this.filters = {};
+    this.filters = {}
     this.render()
   }
 
@@ -16,10 +16,29 @@ export default class ProductGrid {
     </div>
     `)
 
-    for (let key of ProductCard) {
-      this.elem.queueSelector(".products-grid__inner").append(key)
-    }
+    let gridInner = this.elem.querySelector(".products-grid__inner")  
+    this.products.forEach(product => {
+      let productCard = new ProductCard(product)
+      gridInner.append(productCard.elem)
+    })
   }
 
+    updateFilter(filters) {
+      let filtered = this.products
+      Object.assign(this.filters, filters)
+
+        filtered = filtered
+        .filter(item => (item.nuts != true || !this.filters.noNuts))
+        .filter(item => item.vegeterian == true || !this.filters.vegeterianOnly)
+        .filter(item => item.spiciness <= this.filters.maxSpiciness || this.filters.maxSpiciness === undefined)
+        .filter(item => item.category == this.filters.category || !this.filters.category)
+
+      let gridInner = this.elem.querySelector(".products-grid__inner")
+      gridInner.innerHTML = ''
+      filtered.forEach(product => {
+        let productCard = new ProductCard(product)
+        gridInner.append(productCard.elem)
+      })
+    }
 
 }
